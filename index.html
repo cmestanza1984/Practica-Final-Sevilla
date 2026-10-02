@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Genética de Poblaciones | UTEQ</title>
+  
+  <!-- =================================================================
+       NO TOCAR DESDE AQUÍ: Estilos CSS del Sistema de Diseño Editorial
+       ================================================================= -->
+  <style>
+    /* VARIABLES CSS - SISTEMA DE DISEÑO STEEP ADAPTADO */
+    :root {
+      /* Paleta de Colores (Achromatic + Peach Accent) */
+      --color-ink-black: #17191c;
+      --color-paper-white: #ffffff;
+      --color-mist-gray: #f2f2f3;
+      --color-fog-white: #fafafb;
+      --color-slate-gray: #777b86;
+      --color-ash-gray: #979799;
+      --color-blush-peach: #fbe1d1;
+      --color-sienna-brown: #5d2a1a;
+      
+      /* Tipografía Nativa */
+      --font-serif: 'Georgia', 'Times New Roman', serif;
+      --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      
+      /* Dimensiones & Espaciado */
+      --page-max-width: 1100px;
+      --radius-button: 9999px;
+      --radius-card: 24px;
+      --radius-img: 16px;
+      --shadow-subtle: 0 4px 24px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+      --shadow-elevation: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.04);
+    }
+
+    /* RESET & ESTILOS BASE */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      background-color: var(--color-paper-white);
+      color: var(--color-ink-black);
+      font-family: var(--font-sans);
+      font-size: 1.0625rem; /* 17px */
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* TIPOGRAFÍA HIJERÁRQUICA */
+    h1, h2, h3, .font-serif {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      color: var(--color-ink-black);
+      line-height: 1.2;
+    }
+
+    h1 {
+      font-size: clamp(2.25rem, 5vw, 3.75rem);
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+      letter-spacing: -0.015em;
+      margin-bottom: 1.25rem;
+    }
+
+    h3 {
+      font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: var(--color-slate-gray);
+      margin-bottom: 1rem;
+    }
+
+    p.lead {
+      font-size: 1.1875rem;
+      color: var(--color-ink-black);
+    }
+
+    a {
+      color: var(--color-ink-black);
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+
+    a:hover {
+      opacity: 0.8;
+    }
+
+    /* LAYOUT & SECCIONES */
+    .container {
+      width: 100%;
+      max-width: var(--page-max-width);
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    section {
+      padding: 5rem 0;
+    }
+
+    section.bg-fog {
+      background-color: var(--color-fog-white);
+    }
+
+    /* NAVEGACIÓN PRINCIPAL */
+    header.nav-header {
+      position: sticky;
+      top: 0;
+      background-color: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding: 1rem 0;
+    }
+
+    .nav-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--color-ink-black);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.9375rem;
+      color: var(--color-slate-gray);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--color-ink-black);
+    }
+
+    /* BOTONES ESTILO PÍLDORA */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 1.75rem;
+      border-radius: var(--radius-button);
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background-color: var(--color-ink-black);
+      color: var(--color-paper-white);
+    }
+
+    .btn-primary:hover {
+      background-color: #2c3036;
+      color: var(--color-paper-white);
+      opacity: 1;
+    }
+
+    .btn-secondary {
+      background-color: transparent;
+      border-color: var(--color-ink-black);
+      color: var(--color-ink-black);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--color-mist-gray);
+      opacity: 1;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      padding: 4rem 0 5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    @media (min-width: 868px) {
+      .hero-grid {
+        grid-template-columns: 1.2fr 0.8fr;
+      }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-size: 0.875rem;
+      color: var(--color-ash-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .hero-card-summary {
+      background: var(--color-paper-white);
+      border-radius: var(--radius-card);
+      padding: 2rem;
+      box-shadow: var(--shadow-elevation);
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .info-list {
+      list-style: none;
+    }
+
+    .info-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--color-mist-gray);
+      font-size: 0.95rem;
+    }
+
+    .info-list li:last-child {
+      border-bottom: none;
+    }
+
+    .info-label {
+      color: var(--color-slate-gray);
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: var(--color-ink-black);
+      text-align: right;
+    }
+
+    /* TARJETAS NEUTRAS Y GRIDS */
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 640px) {
+      .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 992px) {
+      .grid-4 { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    .card-neutral {
+      background-color: var(--color-mist-gray);
+      border-radius: var(--radius-card);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card-neutral:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-subtle);
+    }
+
+    .unit-img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: var(--radius-img);
+      margin-bottom: 1.25rem;
+    }
+
+    .unit-number {
+      font-size: 0.8125rem;
+      color: var(--color-ash-gray);
+      font-weight: 600;
+      margin-bottom: 0.35rem;
+    }
+
+    .unit-list {
+      margin-top: 1rem;
+      list-style-type: disc;
+      padding-left: 1.15rem;
+      font-size: 0.9rem;
+      color: var(--color-slate-gray);
+    }
+
+    .unit-list li {
+      margin-bottom: 0.4rem;
+    }
+
+    /* TARJETA DESTACADA PEACH */
+    .card-peach {
+      background-color: var(--color-blush-peach);
+      color: var(--color-sienna-brown);
+      border-radius: var(--radius-card);
+      padding: 2.5rem;
+    }
+
+    .card-peach h2, .card-peach h3, .card-peach p, .card-peach span {
+      color: var(--color-sienna-brown);
+    }
+
+    .teacher-profile-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    @media (min-width: 768px) {
+      .teacher-profile-grid {
+        grid-template-columns: 200px 1fr;
+      }
+    }
+
+    .avatar-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-svg {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: #ffffff;
+      padding: 10px;
+      box-shadow: 0 8px 20px rgba(93, 42, 26, 0.12);
+    }
+
+    .publication-tag {
+      display: inline-block;
+      background: rgba(93, 42, 26, 0.1);
+      padding: 0.35rem 0.85rem;
+      border-radius: var(--radius-button);
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* PREGUNTAS FRECUENTES (ACCORDION) */
+    .faq-item {
+      background-color: var(--color-paper-white);
+      border: 1px solid var(--color-mist-gray);
+      border-radius: 16px;
+      margin-bottom: 1rem;
+      overflow: hidden;
+    }
+
+    .faq-header {
+      width: 100%;
+      padding: 1.25rem 1.5rem;
+      background: none;
+      border: none;
+      text-align: left;
+      font-size: 1.125rem;
+      font-family: var(--font-serif);
+      font-weight: 500;
+      color: var(--color-ink-black);
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .faq-content {
+      padding: 0 1.5rem 1.25rem;
+      color: var(--color-slate-gray);
+      font-size: 1rem;
+    }
+
+    /* CONTACTO & FOOTER */
+    .contact-card {
+      background-color: var(--color-mist-gray);
+      border-radius: var(--radius-card);
+      padding: 2.5rem;
+      text-align: center;
+    }
+
+    footer {
+      border-top: 1px solid var(--color-mist-gray);
+      padding: 2.5rem 0;
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--color-slate-gray);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =================================================================
+       EDITAR AQUÍ: Encabezado y Navegación
+       ================================================================= -->
+  <header class="nav-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#17191c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 15c6.667-6 13.333 0 20-6"/>
+          <path d="M2 9c6.667 6 13.333 0 20 6"/>
+          <path d="M7 12v.01"/><path d="M12 12v.01"/><path d="M17 12v.01"/>
+        </svg>
+        <span>UTEQ · Agropecuaria</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#silabo">Sílabo</a></li>
+        <li><a href="#unidades">Unidades</a></li>
+        <li><a href="#docente">Docente</a></li>
+        <li><a href="#faq">Preguntas</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- =================================================================
+       EDITAR AQUÍ: Sección Hero / Inicio
+       ================================================================= -->
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div>
+          <span class="hero-badge">Asignatura de 5to Nivel · Paralelos A y B</span>
+          <h1>Genética de Poblaciones</h1>
+          <p class="lead">
+            Estudio integral de la dinámica de alelos, variación génica, selección y modelos microevolutivos aplicados al mejoramiento agropecuario y la conservación de especies.
+          </p>
+          <div class="hero-actions">
+            <a href="#silabo" class="btn btn-primary">Ver Sílabo Completo</a>
+            <a href="#contacto" class="btn btn-secondary">Tutorías & Contacto</a>
+          </div>
+        </div>
+
+        <!-- Tarjeta Resumen del Curso -->
+        <div class="hero-card-summary" id="silabo">
+          <h3 class="font-serif">Datos de la Asignatura</h3>
+          <ul class="info-list" style="margin-top: 1rem;">
+            <li>
+              <span class="info-label">Período Académico:</span>
+              <span class="info-value">Regular 2026-2027 SPA</span>
+            </li>
+            <li>
+              <span class="info-label">Fechas del Período:</span>
+              <span class="info-value">26/Oct/2026 – 14/Mar/2027</span>
+            </li>
+            <li>
+              <span class="info-label">Créditos & Horas:</span>
+              <span class="info-value">3.0 Créditos (144 Horas)</span>
+            </li>
+            <li>
+              <span class="info-label">Modalidad:</span>
+              <span class="info-value">Presencial (48h Docente)</span>
+            </li>
+            <li>
+              <span class="info-label">Prerrequisitos:</span>
+              <span class="info-value">Bioestadística y Biología Mol.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         EDITAR AQUÍ: Sección Unidades Curriculares (con Imágenes de Unsplash)
+         ================================================================= -->
+    <section class="bg-fog" id="unidades">
+      <div class="container">
+        <span class="hero-badge">Planificación Curricular</span>
+        <h2>Contenido y Unidades del Curso</h2>
+        <p style="max-width: 650px; margin-bottom: 2.5rem;">
+          Programa de cuatro unidades temáticas acompañadas de imágenes ilustrativas de acceso libre que conectan el nivel molecular con los campos de cultivo y la agronomía.
+        </p>
+
+        <div class="grid-4">
+          <!-- Unidad 1: ADN / Biología Molecular -->
+          <div class="card-neutral">
+            <div>
+              <!-- Imagen libre Unsplash: Estructura de ADN y Genética -->
+              <img class="unit-img" src="https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80" alt="Estructura genético y ADN">
+              <span class="unit-number">UNIDAD 01 · SEMANAS 1-4</span>
+              <h3 class="font-serif">El Material Genético</h3>
+              <p style="font-size: 0.875rem;">Organización, expresión y cambios en los ácidos nucleicos.</p>
+              <ul class="unit-list">
+                <li>Estructura de ADN/ARN y replicación</li>
+                <li>Síntesis de proteínas</li>
+                <li>Mutación y recombinación</li>
+                <li>Análisis de secuencias y paternidad</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Unidad 2: Laboratorio y Herencia -->
+          <div class="card-neutral">
+            <div>
+              <!-- Imagen libre Unsplash: Laboratorio de Biotecnología Vegetal -->
+              <img class="unit-img" src="https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&w=600&q=80" alt="Laboratorio de análisis biotecnológico">
+              <span class="unit-number">UNIDAD 02 · SEMANAS 5-9</span>
+              <h3 class="font-serif">Transmisión Genética</h3>
+              <p style="font-size: 0.875rem;">Herencia mendeliana, no mendeliana y extracromosómica.</p>
+              <ul class="unit-list">
+                <li>Teoría cromosómica de la herencia</li>
+                <li>Herencia monogénica y digénica</li>
+                <li>Herencia extracromosómica</li>
+                <li>Prácticas de laboratorio</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Unidad 3: Cultivos y Mejoramiento / Genética Cuantitativa -->
+          <div class="card-neutral">
+            <div>
+              <!-- Imagen libre Unsplash: Campo Agrícola / Cultivo de Maíz -->
+              <img class="unit-img" src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80" alt="Campo de cultivo agrícola y maizal">
+              <span class="unit-number">UNIDAD 03 · SEMANAS 10-13</span>
+              <h3 class="font-serif">Genética Cuantitativa</h3>
+              <p style="font-size: 0.875rem;">Análisis de caracteres continuos y estimación de parámetros.</p>
+              <ul class="unit-list">
+                <li>Caracteres cuantitativos vs cualitativos</li>
+                <li>Cálculo de Heredabilidad</li>
+                <li>Selección natural y artificial</li>
+                <li>Mejoramiento genético agropecuario</li>
+              </ul>
+            </div>
+          </div>
+
+          <!-- Unidad 4: Dinámica Poblacional y Biodiversidad -->
+          <div class="card-neutral">
+            <div>
+              <!-- Imagen libre Unsplash: Biodiversidad y Poblaciones -->
+              <img class="unit-img" src="https://images.unsplash.com/photo-1516253593875-bd7ba052fbc5?auto=format&fit=crop&w=600&q=80" alt="Población y biodiversidad en la naturaleza">
+              <span class="unit-number">UNIDAD 04 · SEMANAS 14-18</span>
+              <h3 class="font-serif">Dinámica Poblacional</h3>
+              <p style="font-size: 0.875rem;">Fuerzas microevolutivas y modelo de equilibrio.</p>
+              <ul class="unit-list">
+                <li>Acervo genético y frecuencias</li>
+                <li>Deriva, migración y endogamia</li>
+                <li>Equilibrio Hardy-Weinberg</li>
+                <li>Prueba estadística Chi-cuadrado</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         EDITAR AQUÍ: Perfil del Docente
+         ================================================================= -->
+    <section id="docente">
+      <div class="container">
+        <div class="card-peach">
+          <div class="teacher-profile-grid">
+            
+            <div class="avatar-wrapper">
+              <svg class="avatar-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="56" fill="#f2f2f3"/>
+                <path d="M60 28c-14 0-22 10-22 22 0 11 6 18 22 18s22-7 22-18c0-12-8-22-22-22z" fill="#f2d2bd"/>
+                <path d="M38 48c0-14 10-22 22-22s22 8 22 22c-4-8-12-12-22-12s-18 4-22 12z" fill="#2c1d11"/>
+                <path d="M44 60c0 8 7 12 16 12s16-4 16-12c-3 4-8 6-16 6s-13-2-16-6z" fill="#2c1d11"/>
+                <circle cx="51" cy="50" r="2" fill="#17191c"/>
+                <circle cx="69" cy="50" r="2" fill="#17191c"/>
+                <path d="M47 45c3-2 7-2 9 0M64 45c2-2 6-2 9 0" stroke="#17191c" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                <path d="M30 102c0-16 13-26 30-26s30 10 30 26v6H30v-6z" fill="#5d2a1a"/>
+                <path d="M54 76l6 10 6-10" stroke="#ffffff" stroke-width="1.5" fill="none"/>
+              </svg>
+            </div>
+
+            <div>
+              <span style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Docente Titular</span>
+              <h2 class="font-serif" style="margin-top: 0.25rem; margin-bottom: 0.5rem;">Dr. Camilo Alexander Mestanza Uquillas</h2>
+              <p style="font-weight: 500; margin-bottom: 1rem;">
+                Profesor Agregado 2 a Tiempo Completo · Facultad de Ciencias Pecuarias (UTEQ)
+              </p>
+              <p style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 1.25rem;">
+                Doctor en Ciencias Agrarias y Magíster en Genética por la Universidad Austral de Chile. Especialista en biotecnología, caracterización de germoplasma y mejoramiento genético en cultivos agropecuarios (maíz, quinua, cacao).
+              </p>
+              <div>
+                <span class="publication-tag">Gene Reports</span>
+                <span class="publication-tag">Plants (MDPI)</span>
+                <span class="publication-tag">Parasitology Int.</span>
+                <span class="publication-tag">Bragantia</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         EDITAR AQUÍ: Preguntas Frecuentes (FAQ)
+         ================================================================= -->
+    <section class="bg-fog" id="faq">
+      <div class="container" style="max-width: 800px;">
+        <span class="hero-badge" style="text-align: center; display: block;">Resolución de Dudas</span>
+        <h2 class="font-serif" style="text-align: center;">Preguntas Frecuentes</h2>
+        <div style="margin-top: 2rem;">
+          
+          <div class="faq-item">
+            <button class="faq-header" onclick="toggleFaq(this)">
+              ¿Cuáles son los requisitos previos para cursar la asignatura?
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              Es necesario haber aprobado <strong>Bioestadística</strong> y <strong>Biología Molecular</strong> de 4to Nivel, ya que se aplican conceptos cuantitativos y biológicos avanzados.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-header" onclick="toggleFaq(this)">
+              ¿Cómo está estructurado el sistema de evaluación?
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              La calificación combina Tareas Autónomas (TA), Guías y Talleres Grupales (GA) y Evaluaciones Frecuentes y Parciales (EV) distribuidas en dos cortes evaluativos.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-header" onclick="toggleFaq(this)">
+              ¿Dónde puedo acceder a las tutorías académicas?
+              <span>+</span>
+            </button>
+            <div class="faq-content">
+              Las tutorías se imparten presencialmente en el cubículo docente de la Facultad de Ciencias Pecuarias o de manera virtual previa coordinación por correo institucional.
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================
+         EDITAR AQUÍ: Contacto y Tutorías
+         ================================================================= -->
+    <section id="contacto">
+      <div class="container" style="max-width: 800px;">
+        <div class="contact-card">
+          <h2 class="font-serif">Contacto & Horarios de Atención</h2>
+          <p class="lead" style="margin-bottom: 1.5rem;">
+            ¿Tienes alguna consulta académica o necesitas agendar una tutoría?
+          </p>
+          <div style="margin-bottom: 2rem; font-size: 1rem;">
+            <p><strong>Correo Oficial:</strong> cmestanza@uteq.edu.ec</p>
+            <p><strong>Ubicación:</strong> Facultad de Ciencias Pecuarias, Campus UTEQ, Quevedo, Los Ríos, Ecuador</p>
+            <p><strong>Horario de Tutorías:</strong> [PLACEHOLDER - Horario a coordinar en el Encuadre Académico]</p>
+          </div>
+          <a href="mailto:cmestanza@uteq.edu.ec" class="btn btn-primary">Enviar Correo al Docente</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- =================================================================
+       EDITAR AQUÍ: Pie de Página
+       ================================================================= -->
+  <footer>
+    <div class="container">
+      <p>© 2026 Universidad Técnica Estatal de Quevedo · Facultad de Ciencias Pecuarias</p>
+      <p style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--color-ash-gray);">
+        Carrera de Agropecuaria · Genética de Poblaciones (Paralelos A y B)
+      </p>
+    </div>
+  </footer>
+
+  <!-- =================================================================
+       NO TOCAR DESDE AQUÍ: Lógica JavaScript
+       ================================================================= -->
+  <script>
+    function toggleFaq(button) {
+      const content = button.nextElementSibling;
+      const icon = button.querySelector('span');
+      
+      const isOpen = content.style.display === 'block';
+      
+      document.querySelectorAll('.faq-content').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('.faq-header span').forEach(el => el.textContent = '+');
+
+      if (!isOpen) {
+        content.style.display = 'block';
+        icon.textContent = '−';
+      }
+    }
+  </script>
+</body>
+</html>
